@@ -112,9 +112,8 @@
         {
           "quoteProps": "consistent",
           "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
+          "tabWidth": 4,
+          "trailingComma": "all"
         }
       ]
     }
@@ -123,9 +122,8 @@
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false
+    "tabWidth": 4,
+    "trailingComma": "all"
   },
   "@react-native-community/bob": {
     "source": "src",
