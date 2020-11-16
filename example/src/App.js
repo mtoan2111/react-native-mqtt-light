@@ -62,10 +62,10 @@ export default class App extends React.Component {
         };
 
         Mqtt.initQueue({
-            uri: 'tcp://10.0.55.58:1883',
-            clientId: '1@m.com',
-            userName: '1@m.com',
-            password: 'Q',
+            uri: 'tcp://qa-mqtt.comvpxanh.com:1883',
+            clientId: 'anhtuck0022@gmail.com',
+            userName: 'anhtuck0022@gmail.com',
+            password: '1',
             cleanSession: false,
             autoReconnect: true,
         });
