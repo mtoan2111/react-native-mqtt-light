@@ -132,6 +132,14 @@ class Mqtt {
         }
     };
 
+    publish = (topic = '', message = '') => {
+        try {
+            this.Mqtt.publish(topic, message);
+        } catch (err) {
+            this.sendError('MQTT/subscribe: err => ' + err);
+        }
+    };
+
     sendError = (message = '') => {
         try {
             typeof this.onerror === 'function' && this.onerror(message);
