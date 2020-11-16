@@ -33,9 +33,9 @@ android {
     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
     versionName "1.0"
-    
+
   }
-  
+
   buildTypes {
     release {
       minifyEnabled false
@@ -54,6 +54,9 @@ repositories {
   mavenCentral()
   jcenter()
   google()
+  maven {
+    url "https://repo.eclipse.org/content/repositories/paho-snapshots/"
+  }
 
   def found = false
   def defaultDir = null
@@ -127,4 +130,7 @@ dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+  implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+  implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 }
