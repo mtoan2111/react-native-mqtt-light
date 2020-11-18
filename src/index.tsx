@@ -14,7 +14,6 @@ class Mqtt {
 
     constructor() {
         try {
-            console.log(1);
             this.Mqtt = NativeModules.Mqtt;
             this.nativeEvent = new NativeEventEmitter(this.Mqtt);
             this.initListener();
@@ -31,51 +30,6 @@ class Mqtt {
                         this.onmessage(data);
                 } catch (err) {
                     this.sendError('MQTT/initListener/message: err => ' + err);
-                }
-            });
-            this.nativeEvent.addListener('reconnect', (data) => {
-                try {
-                    typeof this.onreconnect === 'function' &&
-                        this.onreconnect(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/reconnect: err => ' + err,
-                    );
-                }
-            });
-            this.nativeEvent.addListener('connect', (data) => {
-                try {
-                    typeof this.onconnect === 'function' &&
-                        this.onconnect(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError('MQTT/initListener/connect: err => ' + err);
-                }
-            });
-            this.nativeEvent.addListener('count', (data) => {
-                try {
-                    console.log(data);
-                    typeof this.oncount === 'function' &&
-                        this.oncount(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError('MQTT/initListener/connect: err => ' + err);
-                }
-            });
-            this.nativeEvent.addListener('subscription', (data) => {
-                try {
-                    typeof this.onsubscription === 'function' &&
-                        this.onsubscription(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/subscription: err => ' + err,
-                    );
                 }
             });
             this.nativeEvent.addListener('lostConnect', (data) => {
@@ -118,7 +72,7 @@ class Mqtt {
 
     initQueue = (options = {}) => {
         try {
-            this.Mqtt.initQueue(options);
+            return this.Mqtt.initQueue(options);
         } catch (err) {
             this.sendError('MQTT/initQueue: err => ' + err);
         }
@@ -126,7 +80,7 @@ class Mqtt {
 
     subscribe = (topic = '') => {
         try {
-            this.Mqtt.subscribe(topic);
+            return this.Mqtt.subscribe(topic);
         } catch (err) {
             this.sendError('MQTT/subscribe: err => ' + err);
         }
@@ -134,7 +88,7 @@ class Mqtt {
 
     publish = (topic = '', message = '') => {
         try {
-            this.Mqtt.publish(topic, message);
+            return this.Mqtt.publish(topic, message);
         } catch (err) {
             this.sendError('MQTT/subscribe: err => ' + err);
         }

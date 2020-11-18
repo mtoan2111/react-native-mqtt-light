@@ -71,14 +71,13 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
             mqttAndroidClient.setCallback(new MqttCallbackExtended() {
                 @Override
                 public void connectComplete(boolean reconnect, String serverURI) {
-                  WritableMap params = Arguments.createMap();
-                  if (reconnect){
-                    params.putString("message", "connection has been reconnected");
-                        sendEvent("connect", params);
+                    WritableMap params = Arguments.createMap();
+                    if (reconnect){
+                        params.putString("message", "connection has been reconnected");
                     }else {
-                    params.putString("message", "connection has been inited");
-                        sendEvent("connect", params);
+                        params.putString("message", "connection has been inited");
                     }
+                    promise.resolve(params);
                 }
 
                 @Override
@@ -94,11 +93,6 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                     params.putString("topic", topic);
                     params.putString("data", new String(message.getPayload()));
                     sendEvent("message", params);
-
-                    WritableMap params1 = Arguments.createMap();
-                    Count = Count + 1;
-                    params1.putString("message", String.valueOf(Count));
-                    sendEvent("count", params1);
                 }
 
                 @Override
@@ -107,7 +101,6 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                 }
             });
             try {
-                boolean test = mqttAndroidClient.isConnected();
                 mqttAndroidClient.connect(this.createMqttConnectOptions(), null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
@@ -123,29 +116,23 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        WritableMap params = Arguments.createMap();
-                        params.putString("message", "Connection failure");
-                        sendEvent("error", params);
+                        promise.reject("Connection Error", exception);
                     }
               });
             } catch (MqttException e) {
-                WritableMap params = Arguments.createMap();
-                params.putString("message", e.getMessage());
-                sendEvent("error", params);
+              promise.reject("Init-queue Error", e);
             }
         }
     }
 
     @ReactMethod
-    public void subscribe(String topic) {
-        this.mqtt_SubscriptionTopic = topic;
-        this.subscriptionTopic();
+    public void subscribe(String topic, Promise promise) {
+        this.subscriptionTopic(topic, promise);
     }
 
     @ReactMethod
-    public void publish(String topic, String message){
-        this.mqtt_PublishTopic = topic;
-        this.publishTopic(message);
+    public void publish(String topic, String message, Promise promise){
+        this.publishTopic(topic, message, promise);
     }
 
     @ReactMethod
@@ -173,24 +160,24 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private void publishTopic(String mess){
+    private void publishTopic(String topic, String mess, Promise promise){
         MqttMessage message = new MqttMessage();
         message.setPayload(mess.getBytes());
         try {
             if(this.MQTT_Connected){
-                mqttAndroidClient.publish(this.mqtt_PublishTopic, message, null, new IMqttActionListener() {
+                mqttAndroidClient.publish(topic, message, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Message has been sent to topic " + mqtt_PublishTopic + " ");
-                        sendEvent("publish", params);
+                        promise.resolve(params);
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Could not send the message to the topic " + mqtt_PublishTopic);
-                        sendEvent("error", params);
+                        promise.reject("Publish Error", exception);
                     }
                 });
             }
@@ -201,22 +188,22 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private void subscriptionTopic() {
+    private void subscriptionTopic(String topic, Promise promise) {
         try {
             if (mqttAndroidClient.isConnected()){
-                mqttAndroidClient.subscribe(this.mqtt_SubscriptionTopic, 0, null, new IMqttActionListener() {
+                mqttAndroidClient.subscribe(topic, 0, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Topic " + mqtt_SubscriptionTopic + " has been subscribed");
-                        sendEvent("subscription", params);
+                        promise.resolve(params);
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Could not subscribe into the topic " + mqtt_SubscriptionTopic);
-                        sendEvent("error", params);
+                        promise.reject("Subscription Error", exception);
                     }
                 });
             }
