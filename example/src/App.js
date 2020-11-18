@@ -10,7 +10,7 @@ import {
 import Mqtt from 'react-native-mqtt-light';
 
 export default class App extends React.Component {
-    count = [];
+    message = [];
     isConnect = false;
 
     constructor(props) {
@@ -24,32 +24,12 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        Mqtt.onconnect = (data) => {
-            Mqtt.subscribe('/mht/84cca8475a66/state');
-            this.setState({
-                isConnect: true,
-            });
-        };
-
-        Mqtt.oncount = (data) => {
-            this.count.push(data);
-            this.setState({
-                isUpdateView: !this.state.isUpdateView,
-            });
-        };
-
-        Mqtt.onunsubscription = (data) => {};
-
-        Mqtt.onsubscription = (data) => {
-            console.log(data);
-            this.setState({
-                isSub: true,
-            });
-        };
-
         Mqtt.onmessage = (data) => {
             try {
-                console.log(data);
+                this.message.push(data);
+                this.setState({
+                    isUpdateView: !this.state.isUpdateView,
+                });
             } catch (err) {
                 console.log(err);
             }
@@ -68,12 +48,33 @@ export default class App extends React.Component {
             password: '1',
             cleanSession: false,
             autoReconnect: true,
-        });
+        })
+            .then((res) => {
+                this.setState({
+                    isConnect: true,
+                });
+                Mqtt.subscribe('/mht/84cca8475a67/state')
+                    .then((res) => {
+                        this.setState({
+                            isSub: true,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
-    componentWillUnmount() {
-        console.log(1231231231);
-    }
+    componentWillUnmount() {}
+
+    onPublishPress = () => {
+        Mqtt.publish('/mht/84cca8475a66/command', 'aaaaa')
+            .then((res) => {})
+            .catch((err) => {});
+    };
 
     render() {
         return (
@@ -84,9 +85,10 @@ export default class App extends React.Component {
                 </Text>
                 <Text>isSub: {this.state.isSub ? 'true' : 'false'}</Text>
                 <Text>error: {this.state.error}</Text>
+                <Button onPress={this.onPublishPress} title={'Publish'} />
                 <ScrollView>
-                    {this.count.map((c, index) => {
-                        return <Text key={index}>Count: {c}</Text>;
+                    {this.message.map((c, index) => {
+                        return <Text key={index}>message: {c}</Text>;
                     })}
                 </ScrollView>
             </View>
