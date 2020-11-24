@@ -7,11 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-
-
-		F4FF95D7245B92E800C19C63 /*  MqttLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /*  MqttLight.swift */; };
-
-		5E555C0D2413F4C50049A1A2 /* MqttLight.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* MqttLight.mm */; };
+		8B4827FB256D408700C2AD20 /* MqttLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4827FA256D408700C2AD20 /* MqttLight.swift */; };
+		8B6AB0B725662CE80009F502 /* MqttLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B6AB0B625662CE80009F502 /* MqttLight.m */; };
+		E663D187EB0F6E0CE840FAB0 /* Pods_MqttLight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5535EB48BBBEEF580B60B8E5 /* Pods_MqttLight.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,12 +26,13 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libMqttLight.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMqttLight.a; sourceTree = BUILT_PRODUCTS_DIR; };
-
-
-		B3E7B5891CC2AC0600A0062D /* MqttLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MqttLight.m; sourceTree = "<group>"; };
-		F4FF95D5245B92E700C19C63 /* MqttLight-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MqttLight-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* MqttLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MqttLight.swift; sourceTree = "<group>"; };
-
+		2620665E7C59E3B942903FBC /* Pods-MqttLight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MqttLight.debug.xcconfig"; path = "Target Support Files/Pods-MqttLight/Pods-MqttLight.debug.xcconfig"; sourceTree = "<group>"; };
+		5535EB48BBBEEF580B60B8E5 /* Pods_MqttLight.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MqttLight.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B4827FA256D408700C2AD20 /* MqttLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MqttLight.swift; sourceTree = "<group>"; };
+		8B6AB0B125662C8D0009F502 /* MqttLight-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MqttLight-Bridging-Header.h"; sourceTree = "<group>"; };
+		8B6AB0B625662CE80009F502 /* MqttLight.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MqttLight.m; sourceTree = "<group>"; };
+		91B8C5E58B1DAD666E127C4A /* Pods-MqttLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MqttLight.release.xcconfig"; path = "Target Support Files/Pods-MqttLight/Pods-MqttLight.release.xcconfig"; sourceTree = "<group>"; };
+		B3E7B5881CC2AC0600A0062D /* MqttLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MqttLight.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E663D187EB0F6E0CE840FAB0 /* Pods_MqttLight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,17 +55,34 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1B5D49EB7C3A838832C7FE77 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5535EB48BBBEEF580B60B8E5 /* Pods_MqttLight.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-
-
-				F4FF95D6245B92E800C19C63 /* MqttLight.swift */,
-				B3E7B5891CC2AC0600A0062D /* MqttLight.m */,
-				F4FF95D5245B92E700C19C63 /* MqttLight-Bridging-Header.h */,
-
+				8B4827FA256D408700C2AD20 /* MqttLight.swift */,
+				8B6AB0B625662CE80009F502 /* MqttLight.m */,
+				B3E7B5881CC2AC0600A0062D /* MqttLight.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				9BA9E07C6F5BFB97EAFD1122 /* Pods */,
+				1B5D49EB7C3A838832C7FE77 /* Frameworks */,
+				8B6AB0B125662C8D0009F502 /* MqttLight-Bridging-Header.h */,
 			);
+			sourceTree = "<group>";
+		};
+		9BA9E07C6F5BFB97EAFD1122 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2620665E7C59E3B942903FBC /* Pods-MqttLight.debug.xcconfig */,
+				91B8C5E58B1DAD666E127C4A /* Pods-MqttLight.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -75,6 +92,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "MqttLight" */;
 			buildPhases = (
+				B65CDA8ECC7F61F73435C2A9 /* [CP] Check Pods Manifest.lock */,
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
 				58B511D91A9E6C8500147676 /* CopyFiles */,
@@ -99,6 +117,7 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1220;
 					};
 				};
 			};
@@ -120,16 +139,38 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		B65CDA8ECC7F61F73435C2A9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MqttLight-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-
-
-				F4FF95D7245B92E800C19C63 /* MqttLight.swift in Sources */,
-				B3E7B58A1CC2AC0600A0062D /* MqttLight.m in Sources */,
-
+				8B4827FB256D408700C2AD20 /* MqttLight.swift in Sources */,
+				8B6AB0B725662CE80009F502 /* MqttLight.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,42 +272,44 @@
 		};
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2620665E7C59E3B942903FBC /* Pods-MqttLight.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = MqttLight;
 				SKIP_INSTALL = YES;
-
 				SWIFT_OBJC_BRIDGING_HEADER = "MqttLight-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 91B8C5E58B1DAD666E127C4A /* Pods-MqttLight.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = MqttLight;
 				SKIP_INSTALL = YES;
-
 				SWIFT_OBJC_BRIDGING_HEADER = "MqttLight-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-
 			};
 			name = Release;
 		};

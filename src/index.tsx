@@ -4,13 +4,7 @@ class Mqtt {
     Mqtt: any;
     nativeEvent: NativeEventEmitter;
     onmessage: any;
-    onreconnect: any;
-    onconnect: any;
-    onlostconnect: any;
-    onsubscription: any;
-    onunsubscription: any;
     onerror: any;
-    oncount: any;
 
     constructor() {
         try {
@@ -30,30 +24,6 @@ class Mqtt {
                         this.onmessage(data);
                 } catch (err) {
                     this.sendError('MQTT/initListener/message: err => ' + err);
-                }
-            });
-            this.nativeEvent.addListener('lostConnect', (data) => {
-                try {
-                    typeof this.onlostconnect === 'function' &&
-                        this.onlostconnect(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/lostConnect: err => ' + err,
-                    );
-                }
-            });
-            this.nativeEvent.addListener('unsubscribe', (data) => {
-                try {
-                    typeof this.onunsubscription === 'function' &&
-                        this.onunsubscription(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/lostConnect: err => ' + err,
-                    );
                 }
             });
             this.nativeEvent.addListener('error', (data) => {

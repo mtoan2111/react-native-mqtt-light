@@ -42,12 +42,14 @@ export default class App extends React.Component {
         };
 
         Mqtt.initQueue({
-            uri: 'tcp://qa-mqtt.comvpxanh.com:1883',
-            clientId: 'anhtuck0022@gmail.com',
-            userName: 'anhtuck0022@gmail.com',
-            password: '1',
+            uri: 'qa-mqtt.comvpxanh.com',
+            clientId: 'toan93.hust@gmail.com',
+            userName: 'toan93.hust@gmail.com',
+            port: 1883,
+            password: 'admin',
             cleanSession: false,
             autoReconnect: true,
+            tls: false,
         })
             .then((res) => {
                 this.setState({
@@ -78,7 +80,7 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.root}>
                 {/* <Text>Test</Text> */}
                 <Text>
                     isConnected: {this.state.isConnect ? 'true' : 'false'}
@@ -97,9 +99,7 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+    root: {
+        paddingTop: 50,
     },
 });
