@@ -4,13 +4,8 @@ class Mqtt {
     Mqtt: any;
     nativeEvent: NativeEventEmitter;
     onmessage: any;
-    onreconnect: any;
-    onconnect: any;
     onlostconnect: any;
-    onsubscription: any;
-    onunsubscription: any;
     onerror: any;
-    oncount: any;
 
     constructor() {
         try {
@@ -32,30 +27,16 @@ class Mqtt {
                     this.sendError('MQTT/initListener/message: err => ' + err);
                 }
             });
+
             this.nativeEvent.addListener('lostConnect', (data) => {
-                try {
+                try{
                     typeof this.onlostconnect === 'function' &&
-                        this.onlostconnect(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
+                        this.onlostconnect(data);
                 } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/lostConnect: err => ' + err,
-                    );
+                    this.sendError('MQTT/initListener/lostConnect: err => ' + err);
                 }
-            });
-            this.nativeEvent.addListener('unsubscribe', (data) => {
-                try {
-                    typeof this.onunsubscription === 'function' &&
-                        this.onunsubscription(
-                            data && typeof data !== 'undefined' && data.message,
-                        );
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/lostConnect: err => ' + err,
-                    );
-                }
-            });
+            })
+
             this.nativeEvent.addListener('error', (data) => {
                 try {
                     this.sendError(
@@ -78,9 +59,9 @@ class Mqtt {
         }
     };
 
-    subscribe = (topic = '') => {
+    subscribe = (topic = '', qos = 0) => {
         try {
-            return this.Mqtt.subscribe(topic);
+            return this.Mqtt.subscribe(topic, qos);
         } catch (err) {
             this.sendError('MQTT/subscribe: err => ' + err);
         }
@@ -93,6 +74,14 @@ class Mqtt {
             this.sendError('MQTT/subscribe: err => ' + err);
         }
     };
+
+    unsubscribe = (topics = []) => {
+        try {
+            return this.Mqtt.unsubscribe(topics);
+        } catch (err) {
+            this.sendError('MQTT/unsubscribe: err => ' + err);
+        }
+    }
 
     sendError = (message = '') => {
         try {
