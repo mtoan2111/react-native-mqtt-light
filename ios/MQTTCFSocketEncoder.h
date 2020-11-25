@@ -6,8 +6,33 @@
 //  Copyright © 2020 Facebook. All rights reserved.
 //
 
-#ifndef MQTTCFSocketEncoder_h
-#define MQTTCFSocketEncoder_h
+#import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, MQTTCFSocketEncoderState) {
+    MQTTCFSocketEncoderStateInitializing,
+    MQTTCFSocketEncoderStateReady,
+    MQTTCFSocketEncoderStateError
+};
 
-#endif /* MQTTCFSocketEncoder_h */
+@class MQTTCFSocketEncoder;
+
+@protocol MQTTCFSocketEncoderDelegate <NSObject>
+
+- (void)encoderDidOpen:(MQTTCFSocketEncoder *)sender;
+- (void)encoder:(MQTTCFSocketEncoder *)sender didFailWithError:(NSError *)error;
+- (void)encoderdidClose:(MQTTCFSocketEncoder *)sender;
+
+@end
+
+@interface MQTTCFSocketEncoder : NSObject <NSStreamDelegate>
+
+@property (nonatomic) MQTTCFSocketEncoderState state;
+@property (strong, nonatomic) NSError *error;
+@property (strong, nonatomic) NSOutputStream *stream;
+@property (weak, nonatomic ) id<MQTTCFSocketEncoderDelegate> delegate;
+
+- (void)open;
+- (void)close;
+- (BOOL)send:(NSData *)data;
+
+@end

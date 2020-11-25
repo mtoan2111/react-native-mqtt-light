@@ -5,9 +5,18 @@
 //  Created by Nguyễn Mạnh Toàn on 11/25/20.
 //  Copyright © 2020 Facebook. All rights reserved.
 //
+#import <Foundation/Foundation.h>
 
-#ifndef ForegroundReconnection_h
-#define ForegroundReconnection_h
+#if TARGET_OS_IPHONE == 1
 
+@class MQTTSessionManager;
 
-#endif /* ForegroundReconnection_h */
+@interface ForegroundReconnection : NSObject
+
+@property (weak, nonatomic) MQTTSessionManager *sessionManager;
+
+- (instancetype)initWithMQTTSessionManager:(MQTTSessionManager *)manager;
+
+@end
+
+#endif

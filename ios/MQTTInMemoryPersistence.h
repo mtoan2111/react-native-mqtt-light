@@ -5,9 +5,14 @@
 //  Created by Nguyễn Mạnh Toàn on 11/25/20.
 //  Copyright © 2020 Facebook. All rights reserved.
 //
+//
 
-#ifndef MQTTInMemoryPersistence_h
-#define MQTTInMemoryPersistence_h
+#import <Foundation/Foundation.h>
+#import "MQTTPersistence.h"
 
+@interface MQTTInMemoryPersistence : NSObject <MQTTPersistence>
+@end
 
-#endif /* MQTTInMemoryPersistence_h */
+@interface MQTTInMemoryFlow : NSObject <MQTTFlow>
+@end
+

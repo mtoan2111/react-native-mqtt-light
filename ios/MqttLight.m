@@ -4,7 +4,7 @@
 //
 RCT_EXPORT_MODULE()
 - (NSArray<NSString *> *)supportedEvents{
-    return @[@"message", @"error"];
+    return @[@"message", @"error", @"lostConnect", @"reconnect", @"close"];
 }
 
 RCT_REMAP_METHOD(initQueue,
@@ -42,6 +42,11 @@ RCT_REMAP_METHOD(initQueue,
             sslPolicy = [MQTTSSLSecurityPolicy policyWithPinningMode:MQTTSSLPinningModeNone];
             sslPolicy.allowInvalidCertificates = YES;
         }
+        
+        [self.manager addObserver:self
+                       forKeyPath:@"state"
+                          options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+                          context:nil];
 
         [self.manager connectTo:[self.options valueForKey:@"uri"]
                            port:[self.options[@"port"] intValue]
@@ -61,32 +66,91 @@ RCT_REMAP_METHOD(initQueue,
                    certificates:nil
                   protocolLevel:MQTTProtocolVersion311
                  connectHandler:^(NSError *error){
-            NSLog(@"Connection info %@", error.localizedDescription);
+            if (error){
+                reject(@"Connection error", @"Something went wrong", error);
+            }
+            else {
+                resolve(@"connection has been established");
+            }
         }];
-
-        [self.manager addObserver:self
-                       forKeyPath:@"state"
-                          options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
-                          context:nil];
     }
     else {
         [self.manager connectToLast:^(NSError *error){
-            NSLog(@"Connection info %@", error.localizedDescription);
+            if (error){
+                reject(@"Connection error", @"Something went wrong", error);
+            }
+            else {
+                resolve(@"connection has been established");
+            }
         }];
     }
+}
+
+RCT_REMAP_METHOD(subscribe,
+                 subscribeWithTopic: (NSString *)topic
+                 qos:(nonnull NSNumber *)qos
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+    [self.manager setSubscription:topic
+                              qos:qos
+                 subscribeHandler:^(NSError *error, NSArray<NSNumber *> *gQoss) {
+        if (error){
+            reject(@"subscribe error", [NSString stringWithFormat:@"Could not subscribe into the topic %@", topic], error);
+        }else {
+            resolve([NSString stringWithFormat:@"Topic %@ has been subscribed", topic]);
+        }
+    }];
+}
+
+RCT_REMAP_METHOD(publish,
+                 publishWithTopic:(NSString *)topic
+                 message:(NSString *)msg
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+    [self.manager sendData:[msg dataUsingEncoding:NSUTF8StringEncoding]
+                     topic:topic
+                       qos:0
+                    retain:false
+            publishHandler:^(NSError *error) {
+        if (error){
+            reject(@"publish error", [NSString stringWithFormat:@"Could not publish message to the topic %@", topic], error);
+        }else {
+            resolve([NSString stringWithFormat:@"Message has been sent to the topic %@", topic]);
+        }
+    }];
+}
+
+RCT_REMAP_METHOD(unsubscribe,
+                 unsubscribeWithTopic:(NSArray<NSString *> *)topics
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+    [self.manager unsetSubscriptions:topics
+                   unsubscribehandle:^(NSError *error) {
+        if (error){
+            reject(@"unsubscribe error", [NSString stringWithFormat:@"Could not subscribe into the topics"], error);
+        }else {
+            resolve([NSString stringWithFormat:@"The topics has been unsubscribed"]);
+        }
+    }];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     switch (self.manager.state) {
         case MQTTSessionManagerStateClosed:
+            [self sendEventWithName:@"close"
+                               body:@"connection has been closed"];
             break;
         case MQTTSessionManagerStateClosing:
             break;
         case MQTTSessionManagerStateConnected:
+            [self sendEventWithName:@"connected"
+                               body:@"connection has been established"];
             break;
         case MQTTSessionManagerStateConnecting:
             break;
         case MQTTSessionManagerStateError:
+            [self sendEventWithName:@"error"
+                               body:@"connection error"];
             break;
         case MQTTSessionManagerStateStarting:
             break;
@@ -94,5 +158,15 @@ RCT_REMAP_METHOD(initQueue,
             break;
     }
 }
+
+- (void)sessionManager:(MQTTSessionManager *)sessionManager didReceiveMessage:(NSData *)data onTopic:(NSString *)topic retained:(BOOL)retained{
+    NSString *mess = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    [self sendEventWithName:@"message" body:@{
+        @"topic": topic,
+        @"data": mess
+    }];
+}
+
+
 
 @end

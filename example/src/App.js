@@ -43,7 +43,7 @@ export default class App extends React.Component {
 
         Mqtt.initQueue({
             uri: 'qa-mqtt.comvpxanh.com',
-            clientId: 'toan93.hust@gmail.com',
+            clientId: 'toan93.hust@gmail.com66',
             userName: 'toan93.hust@gmail.com',
             port: 1883,
             password: 'admin',
@@ -55,27 +55,35 @@ export default class App extends React.Component {
                 this.setState({
                     isConnect: true,
                 });
-                Mqtt.subscribe('/mht/84cca8475a67/state')
+                Mqtt.subscribe('/mht/84cca847ab6e/state')
                     .then((res) => {
                         this.setState({
                             isSub: true,
                         });
                     })
                     .catch((err) => {
-                        console.log(err);
+                        this.setState({
+                            error: err,
+                        });
                     });
             })
             .catch((err) => {
-                console.log(err);
+                this.setState({
+                    error: err,
+                });
             });
     }
 
     componentWillUnmount() {}
 
     onPublishPress = () => {
-        Mqtt.publish('/mht/84cca8475a66/command', 'aaaaa')
+        Mqtt.publish('/mht/84cca847ab6e/command', 'aaaaa')
             .then((res) => {})
-            .catch((err) => {});
+            .catch((err) => {
+                this.setState({
+                    error: err,
+                });
+            });
     };
 
     render() {
@@ -90,7 +98,12 @@ export default class App extends React.Component {
                 <Button onPress={this.onPublishPress} title={'Publish'} />
                 <ScrollView>
                     {this.message.map((c, index) => {
-                        return <Text key={index}>message: {c}</Text>;
+                        return (
+                            <View key={index}>
+                                <Text>topic: {c.topic}</Text>
+                                <Text>message: {c.data}</Text>
+                            </View>
+                        );
                     })}
                 </ScrollView>
             </View>

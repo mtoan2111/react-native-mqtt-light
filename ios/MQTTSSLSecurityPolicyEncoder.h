@@ -5,9 +5,16 @@
 //  Created by Nguyễn Mạnh Toàn on 11/25/20.
 //  Copyright © 2020 Facebook. All rights reserved.
 //
+//
 
-#ifndef MQTTSSLSecurityPolicyEncoder_h
-#define MQTTSSLSecurityPolicyEncoder_h
+#import <Foundation/Foundation.h>
+#import "MQTTSSLSecurityPolicy.h"
+#import "MQTTCFSocketEncoder.h"
 
+@interface MQTTSSLSecurityPolicyEncoder : MQTTCFSocketEncoder
 
-#endif /* MQTTSSLSecurityPolicyEncoder_h */
+@property(strong, nonatomic) MQTTSSLSecurityPolicy *securityPolicy;
+@property(strong, nonatomic) NSString *securityDomain;
+
+@end
+

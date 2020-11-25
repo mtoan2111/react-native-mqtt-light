@@ -6,8 +6,15 @@
 //  Copyright © 2020 Facebook. All rights reserved.
 //
 
-#ifndef GCDTimer_h
-#define GCDTimer_h
+#import <Foundation/Foundation.h>
 
+@interface GCDTimer: NSObject
 
-#endif /* GCDTimer_h */
++ (GCDTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)interval
+                                     repeats:(BOOL)repeats
+                                       queue:(dispatch_queue_t)queue
+                                       block:(void (^)(void))block;
+- (void)invalidate;
+
+@end
+
