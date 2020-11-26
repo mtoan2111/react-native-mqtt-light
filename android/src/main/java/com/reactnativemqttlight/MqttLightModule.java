@@ -111,7 +111,6 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                         disconnectedBufferOptions.setDeleteOldestMessages(false);
                         mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
                         MQTT_Connected = true;
-                        unsubscribe();
                     }
 
                     @Override
@@ -136,10 +135,10 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void unsubscribe(){
+    public void unsubscribe(String[] topics){
         try {
             if (this.MQTT_Connected){
-                mqttAndroidClient.unsubscribe(this.wildCardSubscriptionTopic, null, new IMqttActionListener() {
+                mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         WritableMap params = Arguments.createMap();
