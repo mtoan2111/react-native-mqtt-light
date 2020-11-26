@@ -394,7 +394,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
     root: {
         paddingHorizontal: 10,
-        paddingTop: 20,
+        paddingTop: 30,
         paddingBottom: 15,
         flexDirection: 'column',
         width: '100%',
