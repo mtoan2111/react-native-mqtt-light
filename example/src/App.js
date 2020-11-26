@@ -246,9 +246,11 @@ export default class App extends React.Component {
     render() {
         return (
             <View style={styles.root}>
-                <ScrollView style={{
-                    flex: 1
-                }}>
+                <ScrollView
+                    style={{
+                        flex: 1,
+                    }}
+                >
                     <View style={styles.host}>
                         <Text style={styles.lable}>Host </Text>
                         <TextInput
@@ -268,8 +270,10 @@ export default class App extends React.Component {
                         />
                     </View>
                     <View style={styles.host}>
-                        <Text>
-                            Extension the clientId with the random characters{' '}
+                        <Text style={{
+                            width: '80%'
+                        }}>
+                            Extension the clientId with the random characters ád ád jasdh kjashdkj
                         </Text>
                         <Switch
                             placeholder={'ClientId'}
