@@ -116,7 +116,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        promise.reject("Connection Error", exception);
+                        promise.reject("Connection Error", exception.getMessage());
                     }
               });
             } catch (MqttException e) {
@@ -126,8 +126,8 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void subscribe(String topic, Promise promise) {
-        this.subscriptionTopic(topic, promise);
+    public void subscribe(String topic, int qos, Promise promise) {
+        this.subscriptionTopic(topic, qos, promise);
     }
 
     @ReactMethod
@@ -177,7 +177,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Could not send the message to the topic " + mqtt_PublishTopic);
-                        promise.reject("Publish Error", exception);
+                        promise.reject("Publish Error", exception.getMessage());
                     }
                 });
             }
@@ -188,10 +188,10 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private void subscriptionTopic(String topic, Promise promise) {
+    private void subscriptionTopic(String topic, int qos, Promise promise) {
         try {
             if (mqttAndroidClient.isConnected()){
-                mqttAndroidClient.subscribe(topic, 0, null, new IMqttActionListener() {
+                mqttAndroidClient.subscribe(topic, qos, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         WritableMap params = Arguments.createMap();
@@ -203,7 +203,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Could not subscribe into the topic " + mqtt_SubscriptionTopic);
-                        promise.reject("Subscription Error", exception);
+                        promise.reject("Subscription Error", exception.getMessage());
                     }
                 });
             }
