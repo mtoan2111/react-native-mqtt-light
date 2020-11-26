@@ -4,7 +4,7 @@
 //
 RCT_EXPORT_MODULE()
 - (NSArray<NSString *> *)supportedEvents{
-    return @[@"message", @"error", @"lostConnect", @"reconnect", @"close"];
+    return @[@"message", @"error", @"lostConnect", @"reconnect", @"close", @"unsubscribe"];
 }
 
 RCT_REMAP_METHOD(initQueue,
