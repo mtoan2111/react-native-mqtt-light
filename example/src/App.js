@@ -22,58 +22,82 @@ export default class App extends React.Component {
             error: '',
         };
     }
+    makeid = (length) => {
+        var result = '';
+        var characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(
+                Math.floor(Math.random() * charactersLength),
+            );
+        }
+        return result;
+    };
 
     componentDidMount() {
-        Mqtt.onmessage = (data) => {
-            try {
-                this.message.push(data);
-                this.setState({
-                    isUpdateView: !this.state.isUpdateView,
-                });
-            } catch (err) {
-                console.log(err);
-            }
-        };
+        this.clientId = 'toan93.hust@gmail.com' + this.makeid(10);
+        this.setState(
+            {
+                clientId: this.clientId,
+            },
+            () => {
+                Mqtt.onmessage = (data) => {
+                    try {
+                        this.message.push(data);
+                        this.setState({
+                            isUpdateView: !this.state.isUpdateView,
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                };
 
-        Mqtt.onerror = (data) => {
-            this.setState({
-                error: data,
-            });
-        };
+                Mqtt.onerror = (data) => {
+                    this.setState({
+                        error: data,
+                    });
+                };
 
-        Mqtt.initQueue({
-            uri: 'tcp://qa-mqtt.comvpxanh.com:1883',
-            clientId: 'anhtuck0022@gmail.com',
-            userName: 'anhtuck0022@gmail.com',
-            password: '1',
-            cleanSession: false,
-            autoReconnect: true,
-        })
-            .then((res) => {
-                this.setState({
-                    isConnect: true,
-                });
-                Mqtt.subscribe('/mht/84cca8475a67/state')
+                Mqtt.initQueue({
+                    uri: 'tcp://103.121.90.201',
+                    clientId: this.clientId,
+                    userName: 'toan93.hust@gmail.com',
+                    password: 'admin',
+                    cleanSession: false,
+                    autoReconnect: true,
+                })
                     .then((res) => {
                         this.setState({
-                            isSub: true,
+                            isConnect: true,
                         });
+                        Mqtt.subscribe('/mht/84cca847ab6e/state')
+                            .then((res) => {
+                                this.setState({
+                                    isSub: true,
+                                });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
                     })
                     .catch((err) => {
                         console.log(err);
                     });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            },
+        );
     }
 
     componentWillUnmount() {}
 
     onPublishPress = () => {
         Mqtt.publish('/mht/84cca8475a66/command', 'aaaaa')
-            .then((res) => {})
-            .catch((err) => {});
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     render() {
@@ -83,12 +107,20 @@ export default class App extends React.Component {
                 <Text>
                     isConnected: {this.state.isConnect ? 'true' : 'false'}
                 </Text>
+                <Text>clientId: {this.state.clientId}</Text>
                 <Text>isSub: {this.state.isSub ? 'true' : 'false'}</Text>
                 <Text>error: {this.state.error}</Text>
                 <Button onPress={this.onPublishPress} title={'Publish'} />
-                <ScrollView>
+                <ScrollView style={{
+                    marginBottom: 120
+                }}>
                     {this.message.map((c, index) => {
-                        return <Text key={index}>message: {c}</Text>;
+                        return (
+                            <View key={index}>
+                                <Text>topic: {c.topic}</Text>
+                                <Text>message: {c.data}</Text>
+                            </View>
+                        );
                     })}
                 </ScrollView>
             </View>
