@@ -20,10 +20,13 @@ import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.internal.MqttPersistentData;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +36,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class MqttLightModule extends ReactContextBaseJavaModule {
-    private MqttAndroidClient mqttAndroidClient;
+    private MqttAsyncClient mqttAndroidClient;
     private static ReactApplicationContext reactcontext;
     private boolean MQTT_Connected = false;
     private int Count = 0;
@@ -62,12 +65,17 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void initQueue(ReadableMap options, Promise promise){
+        MemoryPersistence memoryPersistence = new MemoryPersistence();
         this.extractOptions(options);
         if (this.mqtt_Uri != ""){
             if (this.mqtt_ClientId == ""){
                 this.mqtt_ClientId = String.valueOf(System.currentTimeMillis());
             }
-            mqttAndroidClient = new MqttAndroidClient(reactcontext, this.mqtt_Uri, this.mqtt_ClientId );
+            try {
+                mqttAndroidClient = new MqttAsyncClient(this.mqtt_Uri, this.mqtt_ClientId, memoryPersistence );
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
             mqttAndroidClient.setCallback(new MqttCallbackExtended() {
                 @Override
                 public void connectComplete(boolean reconnect, String serverURI) {
@@ -159,6 +167,22 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public boolean isConnected() {
+        return (this.mqttAndroidClient != null && this.mqttAndroidClient.isConnected());
+    }
+
+    @ReactMethod
+    public void reconnect() {
+        if (this.mqttAndroidClient != null){
+            try {
+                this.mqttAndroidClient.reconnect();
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void publishTopic(String topic, String mess, Promise promise){
         MqttMessage message = new MqttMessage();
         message.setPayload(mess.getBytes());
@@ -189,7 +213,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 
     private void subscriptionTopic(String topic, int qos, Promise promise) {
         try {
-            if (mqttAndroidClient.isConnected()){
+            if (mqttAndroidClient != null && mqttAndroidClient.isConnected()){
                 mqttAndroidClient.subscribe(topic, qos, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
