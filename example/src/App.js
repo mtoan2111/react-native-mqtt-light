@@ -208,17 +208,28 @@ export default class App extends React.Component {
     };
 
     onPublishPress = () => {
-        Mqtt.publish(this.state.pubTopic, this.state.data)
-            .then((res) => {
-                this.setState({
-                    pubStatus: 'published to topic' + this.state.pubTopic,
+        try {
+            Mqtt.isConnected()
+                .then((res) => {
+                    console.log(res);
+                    Mqtt.publish(this.state.pubTopic, this.state.data)
+                        .then((res) => {
+                            console.log(res);
+                            this.setState({
+                                pubStatus:
+                                    'published to topic' + this.state.pubTopic,
+                            });
+                        })
+                        .catch((err) => {
+                            this.setState({
+                                pubStatus: err,
+                            });
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
-            })
-            .catch((err) => {
-                this.setState({
-                    pubStatus: err,
-                });
-            });
+        } catch {}
     };
 
     onScroll = (event) =>
@@ -270,10 +281,13 @@ export default class App extends React.Component {
                         />
                     </View>
                     <View style={styles.host}>
-                        <Text style={{
-                            width: '80%'
-                        }}>
-                            Extension the clientId with the random characters ád ád jasdh kjashdkj
+                        <Text
+                            style={{
+                                width: '80%',
+                            }}
+                        >
+                            Extension the clientId with the random characters ád
+                            ád jasdh kjashdkj
                         </Text>
                         <Switch
                             placeholder={'ClientId'}

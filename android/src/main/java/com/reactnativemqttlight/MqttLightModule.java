@@ -168,8 +168,16 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public boolean isConnected() {
-        return (this.mqttAndroidClient != null && this.mqttAndroidClient.isConnected());
+    public void isConnected(Promise promise) {
+        if (this.mqttAndroidClient != null){
+            boolean connected = this.mqttAndroidClient.isConnected();
+            WritableMap params = Arguments.createMap();
+            params.putString("isConnected", "Client is still connected to broker");
+            promise.resolve(params);
+        }
+        else {
+            promise.reject("Connection Error", "Connection error");
+        }
     }
 
     @ReactMethod
