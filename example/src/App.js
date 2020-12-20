@@ -25,11 +25,11 @@ export default class App extends React.Component {
             clientIdValue: 'toan93.hust@gmail.com',
             randomValue: true,
             usernameValue: 'toan93.hust@gmail.com',
-            passwordValue: 'admin',
+            passwordValue: '1',
             Status: '',
             cleanSession: false,
-            subTopic: '/mht/84cca8475a66/state',
-            pubTopic: '/mht/84cca8475a66/command',
+            subTopic: '/mht/b827ebd00917/state',
+            pubTopic: '/mht/b827ebd00917/command',
             pubStatus: '',
         };
     }
@@ -393,7 +393,7 @@ export default class App extends React.Component {
                         Status: {this.state.pubStatus}
                     </Text>
                     <Button
-                        disabled={!this.state.isConnect}
+                        // disabled={!this.state.isConnect}
                         onPress={this.onPublishPress}
                         style={styles.buttons}
                         title={'Publish into topic'}
