@@ -101,6 +101,14 @@ class Mqtt {
         }
     };
 
+    disconnect = () => {
+        try {
+            return this.Mqtt?.disconnect?.();
+        } catch (err) {
+            this.sendError('MQTT/disconnect: err => ' + err);
+        }
+    };
+
     sendError = (message = '') => {
         try {
             typeof this.onerror === 'function' && this.onerror(message);
