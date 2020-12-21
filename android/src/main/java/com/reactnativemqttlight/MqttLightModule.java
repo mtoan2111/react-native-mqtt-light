@@ -193,24 +193,22 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void disconnect(Promise promise) {
-        if (this.mqttAndroidClient.isConnected()){
-            try {
-                this.mqttAndroidClient.disconnect(null, new IMqttActionListener() {
-                    @Override
-                    public void onSuccess(IMqttToken asyncActionToken) {
-                        WritableMap params = Arguments.createMap();
-                        params.putString("message", "Disconnect successfully");
-                        promise.resolve(params);
-                    }
+        try {
+            this.mqttAndroidClient.disconnect(null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    WritableMap params = Arguments.createMap();
+                    params.putString("message", "Disconnect successfully");
+                    promise.resolve(params);
+                }
 
-                    @Override
-                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        promise.reject("Disconnect Error", exception.getMessage());
-                    }
-                });
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    promise.reject("Disconnect Error", exception.getMessage());
+                }
+            });
+        } catch (MqttException e) {
+            promise.reject("Disconnect Error", e.getMessage());
         }
     }
 
