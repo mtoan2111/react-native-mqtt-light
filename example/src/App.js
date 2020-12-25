@@ -25,11 +25,11 @@ export default class App extends React.Component {
             clientIdValue: 'toan93.hust@gmail.com',
             randomValue: true,
             usernameValue: 'toan93.hust@gmail.com',
-            passwordValue: 'admin',
+            passwordValue: '1',
             Status: '',
             cleanSession: false,
-            subTopic: '/mht/84cca8475a66/state',
-            pubTopic: '/mht/84cca8475a66/command',
+            subTopic: '/mht/b827ebd00917/state',
+            pubTopic: '/mht/b827ebd00917/command',
             pubStatus: '',
         };
     }
@@ -208,17 +208,28 @@ export default class App extends React.Component {
     };
 
     onPublishPress = () => {
-        Mqtt.publish(this.state.pubTopic, this.state.data)
-            .then((res) => {
-                this.setState({
-                    pubStatus: 'published to topic' + this.state.pubTopic,
+        try {
+            Mqtt.isConnected()
+                .then((res) => {
+                    console.log(res);
+                    Mqtt.publish(this.state.pubTopic, this.state.data)
+                        .then((res) => {
+                            console.log(res);
+                            this.setState({
+                                pubStatus:
+                                    'published to topic' + this.state.pubTopic,
+                            });
+                        })
+                        .catch((err) => {
+                            this.setState({
+                                pubStatus: err,
+                            });
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
-            })
-            .catch((err) => {
-                this.setState({
-                    pubStatus: err,
-                });
-            });
+        } catch {}
     };
 
     onScroll = (event) =>
@@ -270,10 +281,13 @@ export default class App extends React.Component {
                         />
                     </View>
                     <View style={styles.host}>
-                        <Text style={{
-                            width: '80%'
-                        }}>
-                            Extension the clientId with the random characters ád ád jasdh kjashdkj
+                        <Text
+                            style={{
+                                width: '80%',
+                            }}
+                        >
+                            Extension the clientId with the random characters ád
+                            ád jasdh kjashdkj
                         </Text>
                         <Switch
                             placeholder={'ClientId'}
@@ -379,7 +393,7 @@ export default class App extends React.Component {
                         Status: {this.state.pubStatus}
                     </Text>
                     <Button
-                        disabled={!this.state.isConnect}
+                        // disabled={!this.state.isConnect}
                         onPress={this.onPublishPress}
                         style={styles.buttons}
                         title={'Publish into topic'}
