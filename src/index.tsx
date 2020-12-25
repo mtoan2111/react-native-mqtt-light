@@ -2,13 +2,12 @@ import { NativeModules, NativeEventEmitter } from 'react-native';
 
 class Mqtt {
     Mqtt: any;
-    nativeEvent: NativeEventEmitter;
+    nativeEvent: any;
     onmessage: any;
     onlostconnect: any;
     onerror: any;
 
     constructor() {
-        this.nativeEvent = new NativeEventEmitter(null);
     }
 
     init = () => {
@@ -23,7 +22,7 @@ class Mqtt {
 
     initListener = () => {
         try {
-            this.nativeEvent.addListener('message', (data) => {
+            this.nativeEvent?.addListener?.('message', (data) => {
                 try {
                     typeof this.onmessage === 'function' &&
                         this.onmessage?.(data);
@@ -32,7 +31,7 @@ class Mqtt {
                 }
             });
 
-            this.nativeEvent.addListener('lostConnect', (data) => {
+            this.nativeEvent?.addListener?.('lostConnect', (data) => {
                 try {
                     typeof this.onlostconnect === 'function' &&
                         this.onlostconnect?.(data);
@@ -43,7 +42,7 @@ class Mqtt {
                 }
             });
 
-            this.nativeEvent.addListener('error', (data) => {
+            this.nativeEvent?.addListener?.('error', (data) => {
                 try {
                     this.sendError(
                         'MQTT/initListener/error: err => ' + data.message,
@@ -89,24 +88,6 @@ class Mqtt {
             return this.Mqtt?.unsubscribe?.(topics);
         } catch (err) {
             this.sendError('MQTT/unsubscribe: err => ' + err);
-            return Promise.reject(err);
-        }
-    };
-
-    isConnected = () => {
-        try {
-            return this.Mqtt?.isConnected?.();
-        } catch (err) {
-            this.sendError('MQTT/isConnected: err => ' + err);
-            return Promise.reject(err);
-        }
-    };
-
-    reconnect = () => {
-        try {
-            return this.Mqtt?.reconnect?.();
-        } catch (err) {
-            this.sendError('MQTT/reconnect: err => ' + err);
             return Promise.reject(err);
         }
     };
