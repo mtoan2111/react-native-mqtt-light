@@ -22,7 +22,7 @@ class Mqtt {
 
     initListener = () => {
         try {
-            this.nativeEvent?.addListener?.('message', (data) => {
+            this.nativeEvent.addListener('message', (data: any) => {
                 try {
                     typeof this.onmessage === 'function' &&
                         this.onmessage?.(data);
@@ -31,7 +31,7 @@ class Mqtt {
                 }
             });
 
-            this.nativeEvent?.addListener?.('lostConnect', (data) => {
+            this.nativeEvent.addListener('lostConnect', (data: any) => {
                 try {
                     typeof this.onlostconnect === 'function' &&
                         this.onlostconnect?.(data);
@@ -42,7 +42,7 @@ class Mqtt {
                 }
             });
 
-            this.nativeEvent?.addListener?.('error', (data) => {
+            this.nativeEvent.addListener('error', (data: any) => {
                 try {
                     this.sendError(
                         'MQTT/initListener/error: err => ' + data.message,
