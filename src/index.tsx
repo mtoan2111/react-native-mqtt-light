@@ -2,13 +2,12 @@ import { NativeModules, NativeEventEmitter } from 'react-native';
 
 class Mqtt {
     Mqtt: any;
-    nativeEvent: NativeEventEmitter;
+    nativeEvent: any;
     onmessage: any;
     onlostconnect: any;
     onerror: any;
 
     constructor() {
-        this.nativeEvent = new NativeEventEmitter(null);
     }
 
     init = () => {
@@ -89,24 +88,6 @@ class Mqtt {
             return this.Mqtt?.unsubscribe?.(topics);
         } catch (err) {
             this.sendError('MQTT/unsubscribe: err => ' + err);
-            return Promise.reject(err);
-        }
-    };
-
-    isConnected = () => {
-        try {
-            return this.Mqtt?.isConnected?.();
-        } catch (err) {
-            this.sendError('MQTT/isConnected: err => ' + err);
-            return Promise.reject(err);
-        }
-    };
-
-    reconnect = () => {
-        try {
-            return this.Mqtt?.reconnect?.();
-        } catch (err) {
-            this.sendError('MQTT/reconnect: err => ' + err);
             return Promise.reject(err);
         }
     };

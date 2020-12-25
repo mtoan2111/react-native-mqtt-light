@@ -48,6 +48,7 @@ export default class App extends React.Component {
 
     componentDidMount() {
         this.isConnect = false;
+        Mqtt.init();
     }
 
     onHostNameChange = (text) => {
@@ -209,25 +210,17 @@ export default class App extends React.Component {
 
     onPublishPress = () => {
         try {
-            Mqtt.isConnected()
+            Mqtt.publish(this.state.pubTopic, this.state.data)
                 .then((res) => {
                     console.log(res);
-                    Mqtt.publish(this.state.pubTopic, this.state.data)
-                        .then((res) => {
-                            console.log(res);
-                            this.setState({
-                                pubStatus:
-                                    'published to topic' + this.state.pubTopic,
-                            });
-                        })
-                        .catch((err) => {
-                            this.setState({
-                                pubStatus: err,
-                            });
-                        });
+                    this.setState({
+                        pubStatus: 'published to topic' + this.state.pubTopic,
+                    });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    this.setState({
+                        pubStatus: err,
+                    });
                 });
         } catch {}
     };

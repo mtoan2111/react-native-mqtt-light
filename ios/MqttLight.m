@@ -134,6 +134,18 @@ RCT_REMAP_METHOD(unsubscribe,
     }];
 }
 
+RCT_REMAP_METHOD(disconnect,
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+    [self.manager disconnectWithDisconnectHandler:^(NSError *error) {
+        if (error){
+            reject(@"disconnect error", error.localizedDescription, error);
+        }else {
+            resolve([NSString stringWithFormat:@"The client has been disconnected"]);
+        }
+    }];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     switch (self.manager.state) {
         case MQTTSessionManagerStateClosed:
@@ -166,6 +178,7 @@ RCT_REMAP_METHOD(unsubscribe,
         @"data": mess
     }];
 }
+
 
 
 
