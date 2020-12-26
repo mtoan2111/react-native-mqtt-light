@@ -149,10 +149,10 @@ RCT_REMAP_METHOD(disconnect,
 RCT_REMAP_METHOD(isConnected,
                  isConnectedWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    if (self.manager.state == MQTTSessionStatusConnected){
-        resolve([NSString stringWithFormat:@"The client has been disconnected"]);
+    if (self.manager.state == MQTTSessionManagerStateConnected){
+        resolve([NSString stringWithFormat:@"The client is still connect"]);
     }else {
-        reject(@"connection error", @"", nil);
+        reject(@"connection error", @"The connection has been lost", nil);
     }
 }
 
