@@ -7,8 +7,7 @@ class Mqtt {
     onlostconnect: any;
     onerror: any;
 
-    constructor() {
-    }
+    constructor() {}
 
     init = () => {
         try {
@@ -88,6 +87,15 @@ class Mqtt {
             return this.Mqtt?.unsubscribe?.(topics);
         } catch (err) {
             this.sendError('MQTT/unsubscribe: err => ' + err);
+            return Promise.reject(err);
+        }
+    };
+
+    isConnected = () => {
+        try {
+            return this.Mqtt?.isConnected();
+        } catch (err) {
+            this.sendError('MQTT/isConnected: err => ' + err);
             return Promise.reject(err);
         }
     };
