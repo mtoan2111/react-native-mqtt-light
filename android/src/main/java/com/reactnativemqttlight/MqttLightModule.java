@@ -92,7 +92,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                 public void connectionLost(Throwable cause) {
                     WritableMap params = Arguments.createMap();
                     params.putString("message", "connection has been lost");
-                    sendEvent("connectionLost", params);
+                    sendEvent("MQTTConnectionLost", params);
                 }
 
                 @Override
@@ -100,7 +100,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                     WritableMap params = Arguments.createMap();
                     params.putString("topic", topic);
                     params.putString("data", new String(message.getPayload()));
-                    sendEvent("message", params);
+                    sendEvent("MQTTMessage", params);
                 }
 
                 @Override
@@ -151,14 +151,14 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                     public void onSuccess(IMqttToken asyncActionToken) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Unsubscribe topic");
-                        sendEvent("unsubscribe", params);
+                        sendEvent("MQTTUnsubscribe", params);
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         WritableMap params = Arguments.createMap();
                         params.putString("message", "Could not Unsubscribe the topic " + mqtt_PublishTopic);
-                        sendEvent("error", params);
+                        sendEvent("MQTTError", params);
                     }
                 });
             }
@@ -225,7 +225,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         } catch (MqttException e) {
             WritableMap params = Arguments.createMap();
             params.putString("message", e.getMessage());
-            sendEvent("error", params);
+            sendEvent("MQTTError", params);
         }
     }
 
@@ -251,7 +251,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         } catch (MqttException e) {
             WritableMap params = Arguments.createMap();
             params.putString("message", e.getMessage());
-            sendEvent("error", params);
+            sendEvent("MQTTError", params);
         }
     }
 
