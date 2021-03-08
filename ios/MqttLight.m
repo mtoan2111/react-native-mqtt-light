@@ -135,7 +135,7 @@ RCT_REMAP_METHOD(unsubscribe,
 }
 
 RCT_REMAP_METHOD(disconnect,
-                 resolver:(RCTPromiseResolveBlock)resolve
+                 disconnectWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
     [self.manager disconnectWithDisconnectHandler:^(NSError *error) {
         if (error){
@@ -144,6 +144,16 @@ RCT_REMAP_METHOD(disconnect,
             resolve([NSString stringWithFormat:@"The client has been disconnected"]);
         }
     }];
+}
+
+RCT_REMAP_METHOD(isConnected,
+                 isConnectedWithResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+    if (self.manager.state == MQTTSessionManagerStateConnected){
+        resolve([NSString stringWithFormat:@"The client is still connect"]);
+    }else {
+        reject(@"connection error", @"The connection has been lost", nil);
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{

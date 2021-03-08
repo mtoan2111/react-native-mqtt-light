@@ -103,6 +103,15 @@ class Mqtt {
         }
     };
 
+    isConnected = () => {
+        try {
+            return this.Mqtt?.isConnected();
+        } catch (err) {
+            this.sendError('MQTT/isConnected: err => ' + err);
+            return Promise.reject(err);
+        }
+    };
+
     disconnect = () => {
         try {
             return this.Mqtt?.disconnect?.();

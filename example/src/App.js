@@ -8,6 +8,7 @@ import {
     TabBarIOS,
     TextInput,
     Switch,
+    Platform,
 } from 'react-native';
 import Mqtt from 'react-native-mqtt-light';
 
@@ -21,7 +22,9 @@ export default class App extends React.Component {
             isConnect: false,
             isSub: false,
             error: '',
-            hostValue: 'tcp://qa-mqtt.comvpxanh.com',
+            hostValue:
+                (Platform.OS === 'android' ? 'tcp://' : '') +
+                'qa-mqtt.comvpxanh.com',
             clientIdValue: 'toan93.hust@gmail.com',
             randomValue: true,
             usernameValue: 'toan93.hust@gmail.com',
@@ -210,6 +213,11 @@ export default class App extends React.Component {
 
     onPublishPress = () => {
         try {
+            // Mqtt.isConnected()
+            //     .then((res) => console.log(res))
+            //     .catch((err) => {
+            //         console.log(err);
+            //     });
             Mqtt.publish(this.state.pubTopic, this.state.data)
                 .then((res) => {
                     console.log(res);
