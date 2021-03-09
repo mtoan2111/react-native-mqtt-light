@@ -42,16 +42,6 @@ class Mqtt {
                 }
             });
 
-            this.nativeEvent.addListener('MQTTUnsubscribe', (data: any) => {
-                try {
-                    typeof this.onunsubscribe === 'function' &&
-                        this.onunsubscribe?.(data);
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/lostConnect: err => ' + err,
-                    );
-                }
-            });
 
             this.nativeEvent.addListener('MQTTError', (data: any) => {
                 try {
