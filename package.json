@@ -1,6 +1,6 @@
 {
     "name": "react-native-mqtt-light",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "description": "Lightweight MQTT client for react-native",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
