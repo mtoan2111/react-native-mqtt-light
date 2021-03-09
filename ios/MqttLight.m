@@ -4,7 +4,7 @@
 //
 RCT_EXPORT_MODULE()
 - (NSArray<NSString *> *)supportedEvents{
-    return @[@"message", @"error", @"lostConnect", @"reconnect", @"close", @"unsubscribe", @"connected"];
+    return @[@"MQTTMessage", @"MQTTError", @"MQTTConnectionLost"];
 }
 
 RCT_REMAP_METHOD(initQueue,
@@ -159,19 +159,17 @@ RCT_REMAP_METHOD(isConnected,
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     switch (self.manager.state) {
         case MQTTSessionManagerStateClosed:
-            [self sendEventWithName:@"close"
-                               body:@"connection has been closed"];
+            [self sendEventWithName:@"MQTTConnectionLost"
+                               body:@"connection has been lost"];
             break;
         case MQTTSessionManagerStateClosing:
             break;
         case MQTTSessionManagerStateConnected:
-            [self sendEventWithName:@"connected"
-                               body:@"connection has been established"];
             break;
         case MQTTSessionManagerStateConnecting:
             break;
         case MQTTSessionManagerStateError:
-            [self sendEventWithName:@"error"
+            [self sendEventWithName:@"MQTTError"
                                body:@"connection error"];
             break;
         case MQTTSessionManagerStateStarting:
@@ -183,7 +181,7 @@ RCT_REMAP_METHOD(isConnected,
 
 - (void)sessionManager:(MQTTSessionManager *)sessionManager didReceiveMessage:(NSData *)data onTopic:(NSString *)topic retained:(BOOL)retained{
     NSString *mess = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    [self sendEventWithName:@"message" body:@{
+    [self sendEventWithName:@"MQTTMessage" body:@{
         @"topic": topic,
         @"data": mess
     }];
