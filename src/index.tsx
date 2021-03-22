@@ -42,7 +42,6 @@ class Mqtt {
                 }
             });
 
-
             this.nativeEvent.addListener('MQTTError', (data: any) => {
                 try {
                     this.sendError(
@@ -84,9 +83,18 @@ class Mqtt {
         }
     };
 
-    unsubscribe = (topics = []) => {
+    unsubscribes = (topics = []) => {
         try {
-            return this.Mqtt?.unsubscribe?.(topics);
+            return this.Mqtt?.unsubscribes?.(topics);
+        } catch (err) {
+            this.sendError('MQTT/unsubscribes: err => ' + err);
+            return Promise.reject(err);
+        }
+    };
+
+    unsubscribe = (topic = '') => {
+        try {
+            return this.Mqtt?.unsubscribe?.(topic);
         } catch (err) {
             this.sendError('MQTT/unsubscribe: err => ' + err);
             return Promise.reject(err);
