@@ -151,14 +151,12 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 					public void onSuccess(IMqttToken asyncActionToken) {
 						WritableMap params = Arguments.createMap();
 						params.putString("message", "Unsubscribe topic");
-						sendEvent("MQTTUnsubscribe", params);
+						promise.resolve(params);
 					}
 
 					@Override
 					public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-						WritableMap params = Arguments.createMap();
-						params.putString("message", "Could not Unsubscribe the topic " + mqtt_PublishTopic);
-						sendEvent("MQTTError", params);
+						promise.reject("Unsubscribe Error", exception.getMessage());
 					}
 				});
 			}
@@ -168,7 +166,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 	}
 
 	@ReactMethod
-	public void unsubscribe(String topics){
+	public void unsubscribe(String topics, Promise promise){
 		try {
 			if (this.MQTT_Connected){
 				mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
@@ -176,14 +174,12 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 					public void onSuccess(IMqttToken asyncActionToken) {
 						WritableMap params = Arguments.createMap();
 						params.putString("message", "Unsubscribe topic");
-						sendEvent("MQTTUnsubscribe", params);
+                        promise.resolve(params);
 					}
 
 					@Override
 					public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-						WritableMap params = Arguments.createMap();
-						params.putString("message", "Could not Unsubscribe the topic " + mqtt_PublishTopic);
-						sendEvent("MQTTError", params);
+						promise.reject("Unsubscribe Error", exception.getMessage());
 					}
 				});
 			}
