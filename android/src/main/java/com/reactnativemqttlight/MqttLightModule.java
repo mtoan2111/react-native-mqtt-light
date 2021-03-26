@@ -145,46 +145,42 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
     @ReactMethod
 	public void unsubscribes(String[] topics, Promise promise){
 		try {
-			if (this.MQTT_Connected){
-				mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
-					@Override
-					public void onSuccess(IMqttToken asyncActionToken) {
-						WritableMap params = Arguments.createMap();
-						params.putString("message", "Unsubscribe topic");
-						promise.resolve(params);
-					}
+			mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    WritableMap params = Arguments.createMap();
+                    params.putString("message", "Unsubscribe topic");
+                    promise.resolve(params);
+                }
 
-					@Override
-					public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-						promise.reject("Unsubscribe Error", exception.getMessage());
-					}
-				});
-			}
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    promise.reject("Unsubscribe Error", exception.getMessage());
+                }
+            });
 		} catch (MqttException e) {
-			e.printStackTrace();
+			promise.reject("Unsubscribe Error", e.getMessage());
 		}
 	}
 
 	@ReactMethod
 	public void unsubscribe(String topics, Promise promise){
 		try {
-			if (this.MQTT_Connected){
-				mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
-					@Override
-					public void onSuccess(IMqttToken asyncActionToken) {
-						WritableMap params = Arguments.createMap();
-						params.putString("message", "Unsubscribe topic");
-                        promise.resolve(params);
-					}
+            mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    WritableMap params = Arguments.createMap();
+                    params.putString("message", "Unsubscribe topic");
+                    promise.resolve(params);
+                }
 
-					@Override
-					public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-						promise.reject("Unsubscribe Error", exception.getMessage());
-					}
-				});
-			}
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    promise.reject("Unsubscribe Error", exception.getMessage());
+                }
+            });
 		} catch (MqttException e) {
-			e.printStackTrace();
+			promise.reject("Unsubscribe Error", e.getMessage());
 		}
 	}
 
