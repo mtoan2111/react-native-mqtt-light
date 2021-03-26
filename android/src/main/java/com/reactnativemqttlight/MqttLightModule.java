@@ -143,7 +143,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-	public void unsubscribes(String[] topics){
+	public void unsubscribes(String[] topics, Promise promise){
 		try {
 			if (this.MQTT_Connected){
 				mqttAndroidClient.unsubscribe(topics, null, new IMqttActionListener() {
