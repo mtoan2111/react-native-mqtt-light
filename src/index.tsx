@@ -22,37 +22,54 @@ class Mqtt {
 
     initListener = () => {
         try {
-            this.nativeEvent.addListener('MQTTMessage', (data: any) => {
-                try {
-                    typeof this.onmessage === 'function' &&
-                        this.onmessage?.(data);
-                } catch (err) {
-                    this.sendError('MQTT/initListener/message: err => ' + err);
-                }
-            });
+            this.nativeEvent.removeListener(
+                'MQTTMessage',
+                this.onMQTTMessageIncomming,
+            );
+            this.nativeEvent.removeListener(
+                'MQTTConnectionLost',
+                this.onMQTTConnectionLost,
+            );
+            this.nativeEvent.removeListener('MQTTError', this.onMQTTError);
 
-            this.nativeEvent.addListener('MQTTConnectionLost', (data: any) => {
-                try {
-                    typeof this.onlostconnect === 'function' &&
-                        this.onlostconnect?.(data);
-                } catch (err) {
-                    this.sendError(
-                        'MQTT/initListener/lostConnect: err => ' + err,
-                    );
-                }
-            });
+            this.nativeEvent.addListener(
+                'MQTTMessage',
+                this.onMQTTMessageIncomming,
+            );
 
-            this.nativeEvent.addListener('MQTTError', (data: any) => {
-                try {
-                    this.sendError(
-                        'MQTT/initListener/error: err => ' + data.message,
-                    );
-                } catch (err) {
-                    this.sendError('MQTT/initListener/error: err => ' + err);
-                }
-            });
+            this.nativeEvent.addListener(
+                'MQTTConnectionLost',
+                this.onMQTTConnectionLost,
+            );
+
+            this.nativeEvent.addListener('MQTTError', this.onMQTTError);
         } catch (err) {
             this.sendError('MQTT/initQueue: err => ' + err);
+        }
+    };
+
+    onMQTTMessageIncomming = (data: any) => {
+        try {
+            typeof this.onmessage === 'function' && this.onmessage?.(data);
+        } catch (err) {
+            this.sendError('MQTT/initListener/message: err => ' + err);
+        }
+    };
+
+    onMQTTConnectionLost = (data: any) => {
+        try {
+            typeof this.onlostconnect === 'function' &&
+                this.onlostconnect?.(data);
+        } catch (err) {
+            this.sendError('MQTT/initListener/lostConnect: err => ' + err);
+        }
+    };
+
+    onMQTTError = (data: any) => {
+        try {
+            this.sendError('MQTT/initListener/error: err => ' + data.message);
+        } catch (err) {
+            this.sendError('MQTT/initListener/error: err => ' + err);
         }
     };
 
