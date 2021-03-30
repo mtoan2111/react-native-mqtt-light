@@ -1,19 +1,31 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import {
+    NativeModules,
+    NativeEventEmitter,
+    EmitterSubscription,
+} from 'react-native';
 
 class Mqtt {
     Mqtt: any;
-    nativeEvent: any;
+    nativeEvent: NativeEventEmitter | null = null;
     onmessage: any;
     onlostconnect: any;
     onunsubscribe: any;
     onerror: any;
+    mqttMessageSubscriber: EmitterSubscription | undefined;
+    mqttConnectionLostSubscriber: EmitterSubscription | undefined;
+    mqttErrorSubscriber: EmitterSubscription | undefined;
 
     constructor() {}
 
     init = () => {
         try {
             this.Mqtt = NativeModules.Mqtt;
-            this.nativeEvent = new NativeEventEmitter(this.Mqtt);
+            if (!this.nativeEvent) {
+                this.nativeEvent = new NativeEventEmitter(this.Mqtt);
+            }
+            this.mqttMessageSubscriber && this.mqttMessageSubscriber.remove();
+            this.mqttConnectionLostSubscriber && this.mqttConnectionLostSubscriber.remove();
+            this.mqttErrorSubscriber && this.mqttErrorSubscriber.remove();
             this.initListener();
         } catch (err) {
             this.nativeEvent = new NativeEventEmitter(null);
@@ -22,27 +34,30 @@ class Mqtt {
 
     initListener = () => {
         try {
-            this.nativeEvent.removeListener(
+            this.nativeEvent?.removeListener(
                 'MQTTMessage',
                 this.onMQTTMessageIncomming,
             );
-            this.nativeEvent.removeListener(
+            this.nativeEvent?.removeListener(
                 'MQTTConnectionLost',
                 this.onMQTTConnectionLost,
             );
-            this.nativeEvent.removeListener('MQTTError', this.onMQTTError);
+            this.nativeEvent?.removeListener('MQTTError', this.onMQTTError);
 
-            this.nativeEvent.addListener(
+            this.mqttMessageSubscriber = this.nativeEvent?.addListener(
                 'MQTTMessage',
                 this.onMQTTMessageIncomming,
             );
 
-            this.nativeEvent.addListener(
+            this.mqttConnectionLostSubscriber = this.nativeEvent?.addListener(
                 'MQTTConnectionLost',
                 this.onMQTTConnectionLost,
             );
 
-            this.nativeEvent.addListener('MQTTError', this.onMQTTError);
+            this.mqttErrorSubscriber = this.nativeEvent?.addListener(
+                'MQTTError',
+                this.onMQTTError,
+            );
         } catch (err) {
             this.sendError('MQTT/initQueue: err => ' + err);
         }
