@@ -318,7 +318,11 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         MqttMessage message = new MqttMessage();
         message.setPayload(mess.getBytes());
         try {
+<<<<<<< HEAD
+            if (this.MQTT_Connected) {
+=======
             if (mqttAndroidClient != null && mqttAndroidClient.isConnected()) {
+>>>>>>> master
                 mqttAndroidClient.publish(
                     topic,
                     message,
@@ -330,7 +334,12 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                             params.putString(
                                 "message",
                                 "Message has been sent to topic " +
+<<<<<<< HEAD
+                                mqtt_PublishTopic +
+                                " "
+=======
                                 mqtt_PublishTopic
+>>>>>>> master
                             );
                             promise.resolve(params);
                         }
@@ -353,6 +362,8 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                         }
                     }
                 );
+<<<<<<< HEAD
+=======
             } else {
 	            WritableMap params = Arguments.createMap();
 	            params.putString(
@@ -363,6 +374,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 			            "Publish Error",
 			            params
 	            );
+>>>>>>> master
             }
         } catch (MqttException e) {
 	        promise.reject(
@@ -410,6 +422,8 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                         }
                     }
                 );
+<<<<<<< HEAD
+=======
             } else {
 	            WritableMap params = Arguments.createMap();
 	            params.putString(
@@ -420,6 +434,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 			            "Subscription Error",
 			            params
 	            );
+>>>>>>> master
             }
         } catch (MqttException e) {
 	        promise.reject(

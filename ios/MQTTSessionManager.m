@@ -503,4 +503,22 @@
     }
 }
 
+- (void)unsetSubscription:(NSString *)topic
+        unsubscribehandle:(MQTTUnsubscribeHandler)handler{
+    if (self.state == MQTTSessionStatusConnected){
+        __weak MQTTSessionManager *weakSelf = self;
+        [self.session unsubscribeTopic:topic unsubscribeHandler:^(NSError *error) {
+            MQTTSessionManager *strongSelf = weakSelf;
+            if (!error) {
+                [strongSelf.subscriptionLock lock];
+                NSMutableDictionary *newEffectiveSubscriptions = [strongSelf.subscriptions mutableCopy];
+                [newEffectiveSubscriptions removeObjectForKey:topic];
+                strongSelf.effectiveSubscriptions = newEffectiveSubscriptions;
+                [strongSelf.subscriptionLock unlock];
+                handler(error);
+            }
+        }];
+    }
+}
+
 @end
