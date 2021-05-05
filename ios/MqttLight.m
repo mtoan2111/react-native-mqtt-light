@@ -121,7 +121,7 @@ RCT_REMAP_METHOD(publish,
 }
 
 RCT_REMAP_METHOD(unsubscribe,
-                 unsubscribeWithTopic:(NSArray<NSString *> *)topics
+                 unsubscribeWithTopics:(NSArray<NSString *> *)topics
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
     [self.manager unsetSubscriptions:topics
@@ -134,22 +134,39 @@ RCT_REMAP_METHOD(unsubscribe,
     }];
 }
 
+RCT_REMAP_METHOD(unsubscribe,
+                 unsubscribeWithTopic:(NSString *)topic
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+    [self.manager unsetSubscription:topic unsubscribehandle:^(NSError *error) {
+        if (error){
+            reject(@"unsubscribe error", [NSString stringWithFormat:@"Could not subscribe into the topics"], error);
+        }else {
+            resolve([NSString stringWithFormat:@"The topics has been unsubscribed"]);
+        }
+    }];
+}
+
 RCT_REMAP_METHOD(disconnect,
                  disconnectWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    [self.manager disconnectWithDisconnectHandler:^(NSError *error) {
-        if (error){
-            reject(@"disconnect error", error.localizedDescription, error);
-        }else {
-            resolve([NSString stringWithFormat:@"The client has been disconnected"]);
-        }
-    }];
+    if (self.manager && self.manager.state == MQTTSessionManagerStateConnected){
+        [self.manager disconnectWithDisconnectHandler:^(NSError *error) {
+            if (error){
+                reject(@"disconnect error", error.localizedDescription, error);
+            }else {
+                resolve([NSString stringWithFormat:@"The client has been disconnected"]);
+            }
+        }];
+    }else {
+        reject(@"disconnect error", @"The connection has been lost", nil);
+    }
 }
 
 RCT_REMAP_METHOD(isConnected,
                  isConnectedWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    if (self.manager.state == MQTTSessionManagerStateConnected){
+    if (self.manager && self.manager.state == MQTTSessionManagerStateConnected){
         resolve([NSString stringWithFormat:@"The client is still connect"]);
     }else {
         reject(@"connection error", @"The connection has been lost", nil);

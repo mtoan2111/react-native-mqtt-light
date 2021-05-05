@@ -247,4 +247,7 @@ typedef NS_ENUM(int, MQTTSessionManagerState) {
 - (void)unsetSubscriptions:(NSArray<NSString *> *)topics
          unsubscribehandle:(MQTTUnsubscribeHandler)handler;
 
+- (void)unsetSubscription:(NSString *)topic
+        unsubscribehandle:(MQTTUnsubscribeHandler)handler;
+
 @end
