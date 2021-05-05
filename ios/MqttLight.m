@@ -68,8 +68,7 @@ RCT_REMAP_METHOD(initQueue,
                  connectHandler:^(NSError *error){
             if (error){
                 reject(@"Connection error", @"Something went wrong", error);
-            }
-            else {
+            } else {
                 resolve(@"connection has been established");
             }
         }];
@@ -78,8 +77,7 @@ RCT_REMAP_METHOD(initQueue,
         [self.manager connectToLast:^(NSError *error){
             if (error){
                 reject(@"Connection error", @"Something went wrong", error);
-            }
-            else {
+            } else {
                 resolve(@"connection has been established");
             }
         }];
@@ -91,15 +89,20 @@ RCT_REMAP_METHOD(subscribe,
                  qos:(nonnull NSNumber *)qos
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    [self.manager setSubscription:topic
-                              qos:qos
-                 subscribeHandler:^(NSError *error, NSArray<NSNumber *> *gQoss) {
-        if (error){
-            reject(@"subscribe error", [NSString stringWithFormat:@"Could not subscribe into the topic %@", topic], error);
-        }else {
-            resolve([NSString stringWithFormat:@"Topic %@ has been subscribed", topic]);
-        }
-    }];
+    if (self.manager && self.manager.state == MQTTSessionManagerStateConnected){
+        [self.manager setSubscription:topic
+                                  qos:qos
+                     subscribeHandler:^(NSError *error, NSArray<NSNumber *> *gQoss) {
+            if (error){
+                reject(@"subscribe error", [NSString stringWithFormat:@"Could not subscribe into the topic %@", topic], error);
+            } else {
+                resolve([NSString stringWithFormat:@"Topic %@ has been subscribed", topic]);
+            }
+        }];
+    } else {
+        reject(@"subscribe error", @"MQTT is not connected", nil);
+    }
+    
 }
 
 RCT_REMAP_METHOD(publish,
@@ -107,44 +110,57 @@ RCT_REMAP_METHOD(publish,
                  message:(NSString *)msg
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    [self.manager sendData:[msg dataUsingEncoding:NSUTF8StringEncoding]
-                     topic:topic
-                       qos:0
-                    retain:false
-            publishHandler:^(NSError *error) {
-        if (error){
-            reject(@"publish error", [NSString stringWithFormat:@"Could not publish message to the topic %@", topic], error);
-        }else {
-            resolve([NSString stringWithFormat:@"Message has been sent to the topic %@", topic]);
-        }
-    }];
+    if (self.manager && self.manager.state == MQTTSessionManagerStateConnected){
+        [self.manager sendData:[msg dataUsingEncoding:NSUTF8StringEncoding]
+                         topic:topic
+                           qos:0
+                        retain:false
+                publishHandler:^(NSError *error) {
+            if (error){
+                reject(@"publish error", [NSString stringWithFormat:@"Could not publish message to the topic %@", topic], error);
+            } else {
+                resolve([NSString stringWithFormat:@"Message has been sent to the topic %@", topic]);
+            }
+        }];
+    } else {
+        reject(@"subscribe error", @"MQTT is not connected", nil);
+    }
 }
 
 RCT_REMAP_METHOD(unsubscribe,
                  unsubscribeWithTopics:(NSArray<NSString *> *)topics
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    [self.manager unsetSubscriptions:topics
-                   unsubscribehandle:^(NSError *error) {
-        if (error){
-            reject(@"unsubscribe error", [NSString stringWithFormat:@"Could not subscribe into the topics"], error);
-        }else {
-            resolve([NSString stringWithFormat:@"The topics has been unsubscribed"]);
-        }
-    }];
+    if (self.manager && self.manager.state == MQTTSessionManagerStateConnected){
+        [self.manager unsetSubscriptions:topics
+                       unsubscribehandle:^(NSError *error) {
+            if (error){
+                reject(@"unsubscribe error", [NSString stringWithFormat:@"Could not subscribe into the topics"], error);
+            } else {
+                resolve([NSString stringWithFormat:@"The topics has been unsubscribed"]);
+            }
+        }];
+    } else {
+        reject(@"subscribe error", @"MQTT is not connected", nil);
+    }
+    
 }
 
 RCT_REMAP_METHOD(unsubscribe,
                  unsubscribeWithTopic:(NSString *)topic
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject){
-    [self.manager unsetSubscription:topic unsubscribehandle:^(NSError *error) {
-        if (error){
-            reject(@"unsubscribe error", [NSString stringWithFormat:@"Could not subscribe into the topics"], error);
-        }else {
-            resolve([NSString stringWithFormat:@"The topics has been unsubscribed"]);
-        }
-    }];
+    if (self.manager && self.manager.state == MQTTSessionManagerStateConnected){
+        [self.manager unsetSubscription:topic unsubscribehandle:^(NSError *error) {
+            if (error){
+                reject(@"unsubscribe error", [NSString stringWithFormat:@"Could not subscribe into the topics"], error);
+            }else {
+                resolve([NSString stringWithFormat:@"The topics has been unsubscribed"]);
+            }
+        }];
+    } else {
+        reject(@"subscribe error", @"MQTT is not connected", nil);
+    }
 }
 
 RCT_REMAP_METHOD(disconnect,
