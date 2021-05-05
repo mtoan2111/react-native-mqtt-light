@@ -318,7 +318,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         MqttMessage message = new MqttMessage();
         message.setPayload(mess.getBytes());
         try {
-            if (this.MQTT_Connected) {
+            if (mqttAndroidClient != null && mqttAndroidClient.isConnected()) {
                 mqttAndroidClient.publish(
                     topic,
                     message,
@@ -330,8 +330,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                             params.putString(
                                 "message",
                                 "Message has been sent to topic " +
-                                mqtt_PublishTopic +
-                                " "
+                                mqtt_PublishTopic
                             );
                             promise.resolve(params);
                         }
@@ -354,11 +353,22 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                         }
                     }
                 );
+            } else {
+	            WritableMap params = Arguments.createMap();
+	            params.putString(
+			            "message",
+			            "MQTT is not connected"
+	            );
+	            promise.reject(
+			            "Publish Error",
+			            params
+	            );
             }
         } catch (MqttException e) {
-            WritableMap params = Arguments.createMap();
-            params.putString("message", e.getMessage());
-            sendEvent("MQTTError", params);
+	        promise.reject(
+			        "Publish Error",
+			        e.getMessage()
+	        );
         }
     }
 
@@ -400,11 +410,22 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
                         }
                     }
                 );
+            } else {
+	            WritableMap params = Arguments.createMap();
+	            params.putString(
+			            "message",
+			            "MQTT is not connected"
+	            );
+	            promise.reject(
+			            "Subscription Error",
+			            params
+	            );
             }
         } catch (MqttException e) {
-            WritableMap params = Arguments.createMap();
-            params.putString("message", e.getMessage());
-            sendEvent("MQTTError", params);
+	        promise.reject(
+			        "Subscription Error",
+			        e.getMessage()
+	        );
         }
     }
 
