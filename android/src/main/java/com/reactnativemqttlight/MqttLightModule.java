@@ -35,6 +35,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
 
     private MqttAsyncClient mqttAndroidClient;
     private static ReactApplicationContext reactcontext;
+    private final int MAX_IN_FLIGHT = 1000;
     private boolean MQTT_Connected = false;
     private int Count = 0;
     private String wildCardSubscriptionTopic = "/mht/+/state";
@@ -462,6 +463,7 @@ public class MqttLightModule extends ReactContextBaseJavaModule {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(this.mqtt_AutoReconnect);
         options.setCleanSession(this.mqtt_CleanSession);
+        options.setMaxInflight(this.MAX_IN_FLIGHT);
         if (this.mqtt_UserName != "") {
             options.setUserName(this.mqtt_UserName);
         }
