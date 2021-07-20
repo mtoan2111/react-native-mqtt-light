@@ -23,8 +23,7 @@ export default class App extends React.Component {
             isSub: false,
             error: '',
             hostValue:
-                (Platform.OS === 'android' ? 'tcp://' : '') +
-                'qa-mqtt.comvpxanh.com',
+                (Platform.OS === 'android' ? 'tcp://' : '') + 'qa-mqtt.mht.vn',
             clientIdValue: 'toan93.hust@gmail.com',
             randomValue: true,
             usernameValue: 'toan93.hust@gmail.com',
@@ -33,6 +32,9 @@ export default class App extends React.Component {
             cleanSession: false,
             subTopic: '/mht/b827ebd00917/state',
             pubTopic: '/mht/b827ebd00917/command',
+            total: 1000,
+            step: 100,
+            onoff: false,
             pubStatus: '',
         };
     }
@@ -213,11 +215,6 @@ export default class App extends React.Component {
 
     onPublishPress = () => {
         try {
-            // Mqtt.isConnected()
-            //     .then((res) => console.log(res))
-            //     .catch((err) => {
-            //         console.log(err);
-            //     });
             Mqtt.publish(this.state.pubTopic, this.state.data)
                 .then((res) => {
                     console.log(res);
@@ -253,6 +250,22 @@ export default class App extends React.Component {
             y: VerticalScroll,
             animated: true,
         });
+    };
+
+    onMaximumtimesChanged = (data) => {
+        try {
+            this.setState({
+                total: data,
+            });
+        } catch {}
+    };
+
+    onIntervalChanged = (data) => {
+        try {
+            this.setState({
+                step: data,
+            });
+        } catch {}
     };
 
     render() {
@@ -351,7 +364,7 @@ export default class App extends React.Component {
                         style={styles.buttons}
                         title={'Subscribe to topic'}
                     />
-                    <View style={styles.scrool}>
+                    {/* <View style={styles.scrool}>
                         <ScrollView
                             style={{
                                 backgroundColor: '#efefef',
@@ -371,7 +384,7 @@ export default class App extends React.Component {
                                 );
                             })}
                         </ScrollView>
-                    </View>
+                    </View> */}
                     <View style={styles.host}>
                         <Text style={styles.lablex}>Publish topic </Text>
                         <TextInput
@@ -393,8 +406,27 @@ export default class App extends React.Component {
                     <Text style={styles.status}>
                         Status: {this.state.pubStatus}
                     </Text>
+                    <View style={styles.host}>
+                        <Text style={styles.lablex}>Times </Text>
+                        <TextInput
+                            placeholder={'Maximum times'}
+                            value={this.state.data}
+                            keyboardType={Number}
+                            onChangeText={this.onMaximumtimesChanged}
+                            style={styles.text}
+                        />
+                    </View>
+                    <View style={styles.host}>
+                        <Text style={styles.lablex}>Interval </Text>
+                        <TextInput
+                            placeholder={'Interval'}
+                            value={this.state.data}
+                            keyboardType={Number}
+                            onChangeText={this.onIntervalChanged}
+                            style={styles.text}
+                        />
+                    </View>
                     <Button
-                        // disabled={!this.state.isConnect}
                         onPress={this.onPublishPress}
                         style={styles.buttons}
                         title={'Publish into topic'}
